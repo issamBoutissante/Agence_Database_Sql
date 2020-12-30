@@ -74,6 +74,10 @@ select * from client order by num_c desc
 select * from [location] where dat_l>='2014-01-01' and dat_l<='2016-12-30'
 
 -- 5 -	 Quelle est la marque de voiture la plus louée en 2014 ? 
+
+select marque from [location] l join voiture v
+on l.num_v=v.num_v
+group by 
 --               Les Etapes 
 -- Etape 1 (Trouver le nombre des jours loue par chaque voiture)             table_1
 select marque,sum(nb_j) as total_j from [location] l join voiture v
@@ -105,25 +109,16 @@ select marque,(nb_j*tarif_h) as montant from [location] l join voiture v
 on l.num_v=v.num_v
 
 -- 7 -	Quel est le mois qui a marqué un maximum de location pendant l’année 2014 ?
-select datepart(month,dat_l)as mois,sum(nb_j) from [location] 
-group by datepart(month,dat_l)
+select top 1 datepart(month,dat_l)as mois from [location] 
+group by datepart(month,dat_l) order by sum(nb_j) desc
 
 
-
-
-
-
-
-
-
-
-
-
-
-SELECT DATEPART(Year, dat_l) Year, DATEPART(Month,dat_l ) Month, SUM(nb_j) nb
-FROM [location]
-GROUP BY DATEPART(Year, dat_l), DATEPART(Month, dat_l)
-ORDER BY Year, Month
+select datepart(month,dat_l) as total_j from [location] 
+group by datepart(month,dat_l) 
+having sum(nb_j) =(
+select max(loc.total_j) from (select sum(nb_j) as total_j from [location] 
+group by datepart(month,dat_l) ) as loc
+)
 
 
 

@@ -75,9 +75,15 @@ select * from [location] where dat_l>='2014-01-01' and dat_l<='2016-12-30'
 
 -- 5 -	 Quelle est la marque de voiture la plus louée en 2014 ? 
 
-select marque from [location] l join voiture v
+--     Premiere Method
+
+select top 1 marque from [location] l join voiture v
 on l.num_v=v.num_v
-group by 
+where dat_l between '2014-01-01' and '2016-12-30'
+group by marque
+order by sum(nb_j)
+
+--      Deusieme method
 --               Les Etapes 
 -- Etape 1 (Trouver le nombre des jours loue par chaque voiture)             table_1
 select marque,sum(nb_j) as total_j from [location] l join voiture v
@@ -120,5 +126,6 @@ select max(loc.total_j) from (select sum(nb_j) as total_j from [location]
 group by datepart(month,dat_l) ) as loc
 )
 
-
+-- 8 -	Afficher l’état de disponibilité d’une voiture.
+select num_v,marque,disponible from voiture 
 
